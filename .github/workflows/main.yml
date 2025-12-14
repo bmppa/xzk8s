@@ -1,0 +1,39 @@
+# This is a basic workflow to automate the creation of a Docker image
+name: create_and_scan_image
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS CLI Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build Docker image
+        run: docker build -t 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }} .
+       
+      # Retrieve an authentication token and authenticate the Docker client to the registry
+      - name: Docker authentication
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 386650976415.dkr.ecr.us-east-1.amazonaws.com
+
+      # Push Image to Registry
+      - name: Push the image to ECR
+        run: docker push 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
