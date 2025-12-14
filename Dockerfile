@@ -1,7 +1,7 @@
 FROM debian:experimental-20240311@sha256:16cc2b09c44d991d36f63153f13a7c98fb7da6bd2ba9d7cc0f48baacb7484970
 # use debian with a vulnerable version of xz utils as the base image
 RUN apt-get update && apt-get install -y openssh-server
-RUN mkdir /var/run/sshd
+RUN mkdir -p /var/run/sshd
 RUN echo 'root:root123' | chpasswd
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
