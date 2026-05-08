@@ -39,5 +39,8 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           tags: 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
