@@ -3,6 +3,10 @@ name: create_and_scan_image
 
 # Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -42,11 +46,13 @@ jobs:
           TEMP_TOKEN=$(echo $TOKEN_RESPONSE | jq -r '.token')
           echo "TEMP_TOKEN=$TEMP_TOKEN" >> $GITHUB_ENV
        
-      - name: Pull Docker Image
+      - name: Download Cortex CLI
         run: crtx_resp=$(curl -s "https://api-ms-ccr.xdr.us.paloaltonetworks.com/public_api/v1/unified-cli/releases/download-link?os=linux&architecture=amd64" -H "x-xdr-auth-id: ${CORTEX_API_KEY_ID}" -H "Authorization: ${CORTEX_API_KEY}") && crtx_url=$(echo $crtx_resp | jq -r ".signed_url") && crtx_file=$(echo $crtx_resp | jq -r ".file_name") && curl -o $crtx_file $crtx_url 
 
-      - name: Run Docker Container
-        run: cortexcli --api-base-url ${CORTEX_API_URL} --api-key ${CORTEX_API_KEY} --api-key-id $CORTEX_API_KEY_ID image scan 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
+      - name: Run Cortex CLI
+        run: |
+          chmod +x cortexcli
+          cortexcli --api-base-url ${CORTEX_API_URL} --api-key ${CORTEX_API_KEY} --api-key-id $CORTEX_API_KEY_ID image scan 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
 
       # Retrieve an authentication token and authenticate the Docker client to the registry
       - name: Docker authentication
