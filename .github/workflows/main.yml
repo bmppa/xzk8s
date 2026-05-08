@@ -27,19 +27,20 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 
-      # create and boot a builder to use with buildx
+      # Create and boot a builder to use with buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
+
+      # Retrieve an authentication token and authenticate the Docker client to the registry
+      - name: Docker authentication
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 386650976415.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
           context: .
           tags: 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
-       
-      # Retrieve an authentication token and authenticate the Docker client to the registry
-      - name: Docker authentication
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 386650976415.dkr.ecr.us-east-1.amazonaws.com
+          push: true
 
       # Push Image to Registry
       - name: Push the image to ECR
