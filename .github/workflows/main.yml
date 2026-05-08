@@ -24,7 +24,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Build Docker image
-        run: docker buildx -t 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }} .
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }} .
        
       # Retrieve an authentication token and authenticate the Docker client to the registry
       - name: Docker authentication
