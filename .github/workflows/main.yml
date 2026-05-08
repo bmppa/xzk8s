@@ -43,7 +43,7 @@ jobs:
       - name: Run Cortex CLI
         run: |
           chmod +x cortexcli
-          cortexcli --api-base-url ${CORTEX_API_URL} --api-key ${CORTEX_API_KEY} --api-key-id $CORTEX_API_KEY_ID image scan 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
+          ./cortexcli --api-base-url ${CORTEX_API_URL} --api-key ${CORTEX_API_KEY} --api-key-id $CORTEX_API_KEY_ID image scan 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
 
       # Retrieve an authentication token and authenticate the Docker client to the registry
       - name: Docker authentication
