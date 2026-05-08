@@ -41,7 +41,3 @@ jobs:
           context: .
           tags: 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
           push: true
-
-      # Push Image to Registry
-      - name: Push the image to ECR
-        run: docker push 386650976415.dkr.ecr.us-east-1.amazonaws.com/vuln-xz:v${{ github.run_number }}
